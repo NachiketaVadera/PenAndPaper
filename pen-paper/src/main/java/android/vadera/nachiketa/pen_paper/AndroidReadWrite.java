@@ -135,7 +135,7 @@ public class AndroidReadWrite {
 
     public String loadFromExternalDir(String directoryName, String fileName) {
         String root = Environment.getExternalStorageDirectory().toString();
-        File directory = new File(root + directoryName);
+        File directory = new File(root + "/" + directoryName);
         File file = new File(directory, fileName);
 
         StringBuilder builder = new StringBuilder();
