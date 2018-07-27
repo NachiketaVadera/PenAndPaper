@@ -1,20 +1,20 @@
 package android.vadera.nachiketa.penandpaperexample;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.vadera.nachiketa.pen_paper.AndroidReadWrite;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView textView = null;
     EditText editText = null;
+    Spinner spinner = null;
     AndroidReadWrite androidReadWrite = null;
 
     @Override
@@ -24,17 +24,63 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.tvDisplay);
         editText = (EditText) findViewById(R.id.etInput);
+        spinner = (Spinner) findViewById(R.id.spnMode);
 
         androidReadWrite = new AndroidReadWrite();
     }
 
     public void writeFile(View view) {
-        androidReadWrite.saveToExternalDir("PenAndPaper", "test.txt", editText.getText().toString());
-        Toast.makeText(this, "Written", Toast.LENGTH_SHORT).show();
+        switch (spinner.getSelectedItem().toString()) {
+            case "--Select a mode--":
+                Toast.makeText(this, "Select a mode first", Toast.LENGTH_SHORT).show();
+                break;
+
+            case "Context":
+                androidReadWrite.saveWithContext(this, "testFile.txt", editText.getText().toString(), Context.MODE_APPEND);
+                Toast.makeText(this, "Saved - Check Log(i) for details", Toast.LENGTH_SHORT).show();
+                break;
+
+            case "External Directory":
+                androidReadWrite.saveToExternalDir("PenAndPaper", "example.txt", editText.getText().toString());
+                Toast.makeText(this, "Saved - Check Log(i) for details", Toast.LENGTH_SHORT).show();
+                break;
+
+            case "Assets":
+                Toast.makeText(this, "You cannot write to assets at runtime", Toast.LENGTH_SHORT).show();
+                break;
+
+            case "Raw":
+                Toast.makeText(this, "You cannot write to raw at runtime", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     public void readFile(View view) {
-        textView.setText(androidReadWrite.loadFromExternalDir("PenAndPaper", "test.txt"));
-    }
+        switch (spinner.getSelectedItem().toString()) {
+            case "--Select a mode--":
+                Toast.makeText(this, "Select a mode first", Toast.LENGTH_SHORT).show();
+                break;
 
+            case "Context":
+                textView.setText(androidReadWrite.loadFromContext(this, "testFile.txt"));
+                Toast.makeText(this, "Loaded - Check Log(i) for details", Toast.LENGTH_SHORT).show();
+                break;
+
+            case "External Directory":
+                textView.setText(androidReadWrite.loadFromExternalDir("PenAndPaper", "example.txt"));
+                Toast.makeText(this, "Loaded - Check Log(i) for details", Toast.LENGTH_SHORT).show();
+                break;
+
+            case "Assets":
+                textView.setText(androidReadWrite.loadFromAssets("sample.csv", getAssets()));
+                Toast.makeText(this, "Loaded - Check Log(i) for details", Toast.LENGTH_SHORT).show();
+                break;
+
+            case "Raw":
+                textView.setText(androidReadWrite.loadFromRaw("hello.txt"));
+                Toast.makeText(this, "Loaded - Check Log(i) for details", Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+    }
 }

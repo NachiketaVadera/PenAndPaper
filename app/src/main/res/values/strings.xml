@@ -3,4 +3,14 @@
     <string name="etInput_hint">Enter text to save</string>
     <string name="button_text_WriteFile">Write File</string>
     <string name="button_text_ReadFile">Read File</string>
+
+    <string-array name="str_array_spnMode_Entries">
+
+        <item>--Select a mode--</item>
+        <item>Context</item>
+        <item>External Directory</item>
+        <item>Assets</item>
+        <item>Raw</item>
+
+    </string-array>
 </resources>

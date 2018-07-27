@@ -6,6 +6,13 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
+    <Spinner
+        android:id="@+id/spnMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/str_array_spnMode_Entries"
+        style="@style/Widget.AppCompat.DropDownItem.Spinner" />
+
     <EditText
         android:id="@+id/etInput"
         android:layout_width="match_parent"
