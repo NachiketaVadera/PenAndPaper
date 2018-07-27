@@ -104,7 +104,7 @@ public class AndroidReadWrite {
 
     public boolean saveToExternalDir(String directoryName,String fileName, String data) {
         String root = Environment.getExternalStorageDirectory().toString();
-        File directory = new File(root + directoryName);
+        File directory = new File(root + "/" + directoryName);
         if (!directory.exists()) {
             Log.i(TAG, "saveToExternalDir: Directory " + directoryName + " does not exist");
             if (directory.mkdirs()) {

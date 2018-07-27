@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">PenAndPaperExample</string>
+    <string name="etInput_hint">Enter text to save</string>
+    <string name="button_text_WriteFile">Write File</string>
+    <string name="button_text_ReadFile">Read File</string>
 </resources>
