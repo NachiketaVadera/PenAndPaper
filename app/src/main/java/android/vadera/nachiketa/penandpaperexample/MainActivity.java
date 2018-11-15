@@ -1,6 +1,7 @@
 package android.vadera.nachiketa.penandpaperexample;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.vadera.nachiketa.pen_paper.AndroidReadWrite;
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case "Context":
-                androidReadWrite.saveWithContext(this, "testFile.txt", editText.getText().toString(), Context.MODE_APPEND);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    androidReadWrite.saveWithContext(this, "testFile.txt", editText.getText().toString(), Context.MODE_NO_LOCALIZED_COLLATORS);
+                }
                 Toast.makeText(this, "Saved - Check Log(i) for details", Toast.LENGTH_SHORT).show();
                 break;
 

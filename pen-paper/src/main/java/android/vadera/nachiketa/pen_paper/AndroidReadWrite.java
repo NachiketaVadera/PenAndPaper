@@ -18,13 +18,13 @@ import java.util.Objects;
 
 public class AndroidReadWrite {
 
-    private static final String TAG = "AndroidReadWrite";
+    private static final String TAG = "PenAndPaper";
 
     // Writing file with context -----------------------------------------------------------------------------
 
     public boolean saveWithContext(Context context, String fileName, String data, int contextMode) {
 
-        FileOutputStream fileOutputStream = null;
+        FileOutputStream fileOutputStream;
         try {
             fileOutputStream = context.openFileOutput(fileName, contextMode);
             Writer writer = new OutputStreamWriter(Objects.requireNonNull(fileOutputStream));
@@ -38,11 +38,26 @@ public class AndroidReadWrite {
         }
     }
 
+    public boolean saveWithContext(Context context, String fileName, String data, int contextMode, boolean handleException) throws IOException {
+
+        if (handleException) {
+            FileOutputStream fileOutputStream;
+            fileOutputStream = context.openFileOutput(fileName, contextMode);
+            Writer writer = new OutputStreamWriter(Objects.requireNonNull(fileOutputStream));
+            writer.write(data);
+            writer.close();
+            Log.i(TAG, "saveFileWithContext: Saved " + fileName + " successfully");
+            return true;
+        } else {
+            return saveWithContext(context, fileName, data, contextMode);
+        }
+    }
+
     // Reading file from context ---------------------------------------------------------------------------
 
     public String loadFromContext(Context context, String fileName) {
         StringBuilder builder = new StringBuilder();
-        FileInputStream fileInputStream = null;
+        FileInputStream fileInputStream;
         try {
             fileInputStream = context.openFileInput(fileName);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(fileInputStream)));
@@ -56,6 +71,25 @@ public class AndroidReadWrite {
         } catch (IOException e) {
             Log.i(TAG, "loadFileFromContext: Error while loading " + fileName + "\n" + e.getMessage());
             return "Error : " + e.getMessage();
+        }
+    }
+
+    public String loadFromContext(Context context, String fileName, boolean handleException) throws IOException {
+        if (handleException) {
+            StringBuilder builder = new StringBuilder();
+            FileInputStream fileInputStream;
+
+            fileInputStream = context.openFileInput(fileName);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(fileInputStream)));
+            String data;
+            while ((data = bufferedReader.readLine()) != null) {
+                builder.append(data);
+            }
+            bufferedReader.close();
+            Log.i(TAG, "loadFileFromContext: File " + fileName + " loaded successfully");
+            return builder.toString();
+        } else {
+            return loadFromContext(context, fileName);
         }
     }
 
@@ -73,10 +107,26 @@ public class AndroidReadWrite {
             bufferedReader.close();
             Log.i(TAG, "loadFromRaw: File " + fileName + " loaded successfully");
             return builder.toString();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.i(TAG, "loadFromRaw: Error while reading " + fileName + "\n" + e.getMessage());
             return "Error : " + e.getMessage();
+        }
+    }
+
+    public String loadFromRaw(String fileName, boolean handleException) throws IOException {
+        if (handleException) {
+            StringBuilder builder = new StringBuilder();
+            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("res/raw/" + fileName);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)));
+            String data;
+            while ((data = bufferedReader.readLine()) != null) {
+                builder.append(data);
+            }
+            bufferedReader.close();
+            Log.i(TAG, "loadFromRaw: File " + fileName + " loaded successfully");
+            return builder.toString();
+        } else {
+            return loadFromRaw(fileName);
         }
     }
 
@@ -93,16 +143,31 @@ public class AndroidReadWrite {
             bufferedReader.close();
             Log.i(TAG, "readFromAssets: File " + fileName + " loaded successfully");
             return builder.toString();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.i(TAG, "readFromAssets: Error while reading " + fileName + "\n" + e.getMessage());
             return "Error : " + e.getMessage();
         }
     }
 
+    public String loadFromAssets(String fileName, AssetManager assets, boolean handleException) throws IOException {
+        if (handleException) {
+            StringBuilder builder = new StringBuilder();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(assets.open(fileName)));
+            String data;
+            while ((data = bufferedReader.readLine()) != null) {
+                builder.append(data);
+            }
+            bufferedReader.close();
+            Log.i(TAG, "readFromAssets: File " + fileName + " loaded successfully");
+            return builder.toString();
+        } else {
+            return loadFromAssets(fileName, assets);
+        }
+    }
+
     // Write file to external storage ---------------------------------------------------------------------------
 
-    public boolean saveToExternalDir(String directoryName,String fileName, String data) {
+    public boolean saveToExternalDir(String directoryName, String fileName, String data) {
         String root = Environment.getExternalStorageDirectory().toString();
         File directory = new File(root + "/" + directoryName);
         if (!directory.exists()) {
@@ -117,7 +182,7 @@ public class AndroidReadWrite {
         }
         File file = new File(directory, fileName);
 
-        FileOutputStream fileOutputStream = null;
+        FileOutputStream fileOutputStream;
         try {
             fileOutputStream = new FileOutputStream(file);
             Writer writer = new OutputStreamWriter(Objects.requireNonNull(fileOutputStream));
@@ -131,6 +196,35 @@ public class AndroidReadWrite {
         }
     }
 
+    public boolean saveToExternalDir(String directoryName, String fileName, String data, boolean handleException) throws IOException {
+        if (handleException) {
+            String root = Environment.getExternalStorageDirectory().toString();
+            File directory = new File(root + "/" + directoryName);
+            if (!directory.exists()) {
+                Log.i(TAG, "saveToExternalDir: Directory " + directoryName + " does not exist");
+                if (directory.mkdirs()) {
+                    Log.i(TAG, "saveToExternalDir: Directory " + directoryName + " created");
+                } else {
+                    Log.i(TAG, "saveToExternalDir: Error while creating " + directoryName);
+                }
+            } else {
+                Log.i(TAG, "saveToExternalDir: Directory found");
+            }
+            File file = new File(directory, fileName);
+
+            FileOutputStream fileOutputStream;
+            fileOutputStream = new FileOutputStream(file);
+            Writer writer = new OutputStreamWriter(Objects.requireNonNull(fileOutputStream));
+            writer.write(data);
+            writer.close();
+            Log.i(TAG, "saveToExternalDir: Saved " + fileName + " in " + directoryName + " successfully");
+            return true;
+        } else {
+            return saveToExternalDir(directoryName, fileName, data);
+        }
+
+    }
+
     // read file from external storage ---------------------------------------------------------------------------
 
     public String loadFromExternalDir(String directoryName, String fileName) {
@@ -140,7 +234,7 @@ public class AndroidReadWrite {
 
         StringBuilder builder = new StringBuilder();
 
-        FileInputStream fileInputStream = null;
+        FileInputStream fileInputStream;
         try {
             fileInputStream = new FileInputStream(file);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(fileInputStream)));
@@ -154,6 +248,29 @@ public class AndroidReadWrite {
         } catch (IOException e) {
             Log.i(TAG, "loadFromExternalDir: Error while loading " + fileName + "\n" + e.getMessage());
             return "Error : " + e.getMessage();
+        }
+    }
+
+    public String loadFromExternalDir(String directoryName, String fileName, boolean handleException) throws IOException {
+        if (handleException) {
+            String root = Environment.getExternalStorageDirectory().toString();
+            File directory = new File(root + "/" + directoryName);
+            File file = new File(directory, fileName);
+
+            StringBuilder builder = new StringBuilder();
+
+            FileInputStream fileInputStream;
+            fileInputStream = new FileInputStream(file);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(fileInputStream)));
+            String data;
+            while ((data = bufferedReader.readLine()) != null) {
+                builder.append(data);
+            }
+            bufferedReader.close();
+            Log.i(TAG, "loadFromExternalDir: File " + fileName + " loaded successfully");
+            return builder.toString();
+        } else {
+            return loadFromExternalDir(directoryName, fileName);
         }
     }
 }
