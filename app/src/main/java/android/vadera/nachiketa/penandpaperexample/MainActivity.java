@@ -1,8 +1,10 @@
 package android.vadera.nachiketa.penandpaperexample;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.vadera.nachiketa.pen_paper.AndroidReadWrite;
 import android.view.View;
@@ -10,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case "Context":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    androidReadWrite.saveWithContext(this, "testFile.txt", editText.getText().toString(), Context.MODE_NO_LOCALIZED_COLLATORS);
+                try {
+                    androidReadWrite.saveWithContext(this, "file.txt", "Hello, World!", Context.MODE_PRIVATE, true);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 Toast.makeText(this, "Saved - Check Log(i) for details", Toast.LENGTH_SHORT).show();
                 break;

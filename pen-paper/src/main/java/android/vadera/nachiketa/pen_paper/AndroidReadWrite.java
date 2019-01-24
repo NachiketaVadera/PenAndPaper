@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.Objects;
 
 public class AndroidReadWrite {
@@ -273,4 +274,67 @@ public class AndroidReadWrite {
             return loadFromExternalDir(directoryName, fileName);
         }
     }
+
+    // read text from url ---------------------------------------------------------------------------
+
+    public String readFromUrl(String url) {
+        StringBuilder builder = new StringBuilder();
+        try {
+            URL link = new URL(url);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(link.openStream()));
+            String inputLine;
+            while ((inputLine = reader.readLine()) != null) {
+                builder.append(inputLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return builder.toString();
+    }
+
+    public String readFromUrl(String url, boolean handleException) throws IOException {
+        if (handleException) {
+            StringBuilder builder = new StringBuilder();
+            URL link = new URL(url);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(link.openStream()));
+            String inputLine;
+            while ((inputLine = reader.readLine()) != null)
+                builder.append(inputLine);
+            return builder.toString();
+        }
+        else {
+            return readFromUrl(url);
+        }
+    }
+
+    // read text from input stream ---------------------------------------------------------------------------
+
+    public String readFromInputStream(InputStream stream) {
+        StringBuilder builder = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            String inputLine;
+            while ((inputLine = reader.readLine()) != null) {
+                builder.append(inputLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return builder.toString();
+    }
+
+    public String readFromInputStream(InputStream stream, boolean handleException) throws IOException {
+        if (handleException) {
+            StringBuilder builder = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            String inputLine;
+            while ((inputLine = reader.readLine()) != null)
+                builder.append(inputLine);
+            return builder.toString();
+        }
+        else {
+            return readFromInputStream(stream);
+        }
+    }
+
 }
