@@ -1,10 +1,7 @@
 package android.vadera.nachiketa.penandpaperexample;
 
-import android.Manifest;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.vadera.nachiketa.pen_paper.AndroidReadWrite;
 import android.view.View;
@@ -27,9 +24,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView) findViewById(R.id.tvDisplay);
-        editText = (EditText) findViewById(R.id.etInput);
-        spinner = (Spinner) findViewById(R.id.spnMode);
+        textView = findViewById(R.id.tvDisplay);
+        editText = findViewById(R.id.etInput);
+        spinner = findViewById(R.id.spnMode);
 
         androidReadWrite = new AndroidReadWrite();
     }
