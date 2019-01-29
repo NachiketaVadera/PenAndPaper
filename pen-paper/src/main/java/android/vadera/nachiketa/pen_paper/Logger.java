@@ -1,7 +1,5 @@
 package android.vadera.nachiketa.pen_paper;
 
-public class PermissionsManager {
-
-     
+public class Logger {
 
 }
